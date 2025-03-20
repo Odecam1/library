@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Library CRUD Frontend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { background-color: #f8f9fa; }
+    .card { margin-bottom: 15px; }
+    .modal label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Library CRUD</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="#books">Livres</a></li>
+        <li class="nav-item"><a class="nav-link" href="#loans">Emprunts</a></li>
+        <li class="nav-item"><a class="nav-link" href="#users">Utilisateurs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <!-- Section Livres -->
+    <section id="books">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2>Livres</h2>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Ajouter Livre</button>
+      </div>
+      <div id="booksContainer" class="row"></div>
+    </section>
+    <hr>
+
+    <!-- Section Emprunts -->
+    <section id="loans">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2>Emprunts</h2>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addLoanModal">Ajouter Emprunt</button>
+      </div>
+      <div id="loansContainer" class="row"></div>
+    </section>
+    <hr>
+
+    <!-- Section Utilisateurs -->
+    <section id="users">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2>Utilisateurs</h2>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Ajouter Utilisateur</button>
+      </div>
+      <div id="usersContainer" class="row"></div>
+    </section>
+  </div>
+
+  <!-- Modaux -->
+
+  <!-- Modal Ajouter Livre -->
+  <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="addBookForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addBookModalLabel">Ajouter Livre</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="bookTitle">Titre</label>
+              <input type="text" class="form-control" id="bookTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="bookType">Type</label>
+              <input type="text" class="form-control" id="bookType">
+            </div>
+            <div class="form-group">
+              <label for="bookStatus">Statut</label>
+              <input type="text" class="form-control" id="bookStatus">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Modifier Livre -->
+  <div class="modal fade" id="editBookModal" tabindex="-1" role="dialog" aria-labelledby="editBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="editBookForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editBookModalLabel">Modifier Livre</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editBookId">
+            <div class="form-group">
+              <label for="editBookTitle">Titre</label>
+              <input type="text" class="form-control" id="editBookTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="editBookType">Type</label>
+              <input type="text" class="form-control" id="editBookType">
+            </div>
+            <div class="form-group">
+              <label for="editBookStatus">Statut</label>
+              <input type="text" class="form-control" id="editBookStatus">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ajouter Emprunt -->
+  <div class="modal fade" id="addLoanModal" tabindex="-1" role="dialog" aria-labelledby="addLoanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="addLoanForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addLoanModalLabel">Ajouter Emprunt</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Sélection de l'utilisateur -->
+            <div class="form-group">
+              <label for="loanUserId">Utilisateur</label>
+              <select class="form-control" id="loanUserId" required>
+                <option value="">Sélectionner un utilisateur</option>
+              </select>
+            </div>
+            <!-- Sélection du livre -->
+            <div class="form-group">
+              <label for="loanResourceId">Livre</label>
+              <select class="form-control" id="loanResourceId" required>
+                <option value="">Sélectionner un livre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="loanDate">Date d'emprunt</label>
+              <input type="date" class="form-control" id="loanDate" required>
+            </div>
+            <div class="form-group">
+              <label for="returnDate">Date de retour</label>
+              <input type="date" class="form-control" id="returnDate" required>
+            </div>
+            <div class="form-group">
+              <label for="loanStatus">Statut</label>
+              <input type="text" class="form-control" id="loanStatus">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ajouter Utilisateur -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="addUserForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addUserModalLabel">Ajouter Utilisateur</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="userName">Nom</label>
+              <input type="text" class="form-control" id="userName" required>
+            </div>
+            <div class="form-group">
+              <label for="userEmail">Email</label>
+              <input type="email" class="form-control" id="userEmail" required>
+            </div>
+            <div class="form-group">
+              <label for="userPassword">Mot de passe</label>
+              <input type="password" class="form-control" id="userPassword" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery, Popper.js et Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Script de gestion CRUD -->
+  <script>
+    const apiBase = 'http://localhost:8080';
+    // Variables globales pour stocker les livres et utilisateurs
+    let booksData = [];
+    let usersData = [];
+
+    // --- Gestion des Livres ---
+    async function loadBooks() {
+      const res = await fetch(apiBase + '/books');
+      const books = await res.json();
+      booksData = books; // stocker les livres globalement
+      const container = document.getElementById('booksContainer');
+      container.innerHTML = '';
+      books.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'col-md-4';
+        card.innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${book.title}</h5>
+              <p class="card-text">Type: ${book.item_type}</p>
+              <p class="card-text">Statut: ${book.status}</p>
+              <button class="btn btn-warning btn-sm" onclick="showEditBookModal(${book.id}, '${book.title}', '${book.item_type}', '${book.status}')">Modifier</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteBook(${book.id})">Supprimer</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Ajouter un livre
+    document.getElementById('addBookForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('bookTitle').value;
+      const item_type = document.getElementById('bookType').value;
+      const status = document.getElementById('bookStatus').value;
+      await fetch(apiBase + '/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, item_type, status })
+      });
+      $('#addBookModal').modal('hide');
+      loadBooks();
+    });
+
+    // Afficher le modal d'édition d'un livre
+    function showEditBookModal(id, title, item_type, status) {
+      document.getElementById('editBookId').value = id;
+      document.getElementById('editBookTitle').value = title;
+      document.getElementById('editBookType').value = item_type;
+      document.getElementById('editBookStatus').value = status;
+      $('#editBookModal').modal('show');
+    }
+
+    // Modifier un livre
+    document.getElementById('editBookForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editBookId').value;
+      const title = document.getElementById('editBookTitle').value;
+      const item_type = document.getElementById('editBookType').value;
+      const status = document.getElementById('editBookStatus').value;
+      await fetch(apiBase + '/books/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, item_type, status })
+      });
+      $('#editBookModal').modal('hide');
+      loadBooks();
+    });
+
+    // Supprimer un livre
+    async function deleteBook(id) {
+      if (confirm('Voulez-vous vraiment supprimer ce livre ?')) {
+        await fetch(apiBase + '/books/' + id, { method: 'DELETE' });
+        loadBooks();
+      }
+    }
+
+    // --- Gestion des Utilisateurs ---
+    async function loadUsers() {
+      const res = await fetch(apiBase + '/users');
+      const users = await res.json();
+      usersData = users; // stocker globalement
+      const container = document.getElementById('usersContainer');
+      container.innerHTML = '';
+      users.forEach(user => {
+        const card = document.createElement('div');
+        card.className = 'col-md-4';
+        card.innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${user.name}</h5>
+              <p class="card-text">Email: ${user.email}</p>
+              <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Supprimer</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('userName').value;
+      const email = document.getElementById('userEmail').value;
+      const password = document.getElementById('userPassword').value;
+      await fetch(apiBase + '/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      $('#addUserModal').modal('hide');
+      loadUsers();
+    });
+
+    // Note : L'API ne définit pas d'endpoint pour supprimer un utilisateur.
+    async function deleteUser(id) {
+      if (confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) {
+        alert("Suppression d'utilisateur non implémentée côté serveur.");
+      }
+    }
+
+    // --- Gestion des Emprunts ---
+    async function loadLoans() {
+      const res = await fetch(apiBase + '/loans');
+      const loans = await res.json();
+      const container = document.getElementById('loansContainer');
+      container.innerHTML = '';
+      loans.forEach(loan => {
+        // Rechercher le nom de l'utilisateur et le titre du livre grâce aux tableaux globaux
+        let userName = loan.user_id;
+        let bookTitle = loan.resource_id;
+        if(usersData.length) {
+          const user = usersData.find(u => u.id === loan.user_id);
+          if(user) userName = user.name;
+        }
+        if(booksData.length) {
+          const book = booksData.find(b => b.id === loan.resource_id);
+          if(book) bookTitle = book.title;
+        }
+        const loanDate = new Date(loan.loan_date).toLocaleDateString();
+        const returnDate = new Date(loan.return_date).toLocaleDateString();
+        const card = document.createElement('div');
+        card.className = 'col-md-4';
+        card.innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Emprunt #${loan.id}</h5>
+              <p class="card-text">Utilisateur: ${userName}</p>
+              <p class="card-text">Livre: ${bookTitle}</p>
+              <p class="card-text">Date d'emprunt: ${loanDate}</p>
+              <p class="card-text">Date de retour: ${returnDate}</p>
+              <p class="card-text">Statut: ${loan.status}</p>
+              <button class="btn btn-danger btn-sm" onclick="deleteLoan(${loan.id})">Supprimer</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Fonction pour peupler les dropdowns dans le modal d'emprunt
+    async function populateLoanDropdowns() {
+      // Dropdown des utilisateurs
+      const userSelect = document.getElementById('loanUserId');
+      userSelect.innerHTML = '<option value="">Sélectionner un utilisateur</option>';
+      try {
+        const resUsers = await fetch(apiBase + '/users');
+        const users = await resUsers.json();
+        users.forEach(user => {
+          const option = document.createElement('option');
+          option.value = user.id;
+          option.textContent = user.name + ' (' + user.email + ')';
+          userSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erreur lors du chargement des utilisateurs", error);
+      }
+      
+      // Dropdown des livres
+      const bookSelect = document.getElementById('loanResourceId');
+      bookSelect.innerHTML = '<option value="">Sélectionner un livre</option>';
+      try {
+        const resBooks = await fetch(apiBase + '/books');
+        const books = await resBooks.json();
+        books.forEach(book => {
+          const option = document.createElement('option');
+          option.value = book.id;
+          option.textContent = book.title;
+          bookSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erreur lors du chargement des livres", error);
+      }
+    }
+
+    // Appeler populateLoanDropdowns lors de l'ouverture du modal "Ajouter Emprunt"
+    $('#addLoanModal').on('shown.bs.modal', function () {
+      populateLoanDropdowns();
+    });
+
+    // Ajouter un emprunt
+    document.getElementById('addLoanForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user_id = parseInt(document.getElementById('loanUserId').value);
+      const resource_id = parseInt(document.getElementById('loanResourceId').value);
+      // Conversion des dates au format ISO
+      const loan_date = new Date(document.getElementById('loanDate').value).toISOString();
+      const return_date = new Date(document.getElementById('returnDate').value).toISOString();
+      const status = document.getElementById('loanStatus').value;
+      await fetch(apiBase + '/loans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id, resource_id, loan_date, return_date, status })
+      });
+      $('#addLoanModal').modal('hide');
+      loadLoans();
+    });
+
+    async function deleteLoan(id) {
+      if (confirm('Voulez-vous vraiment supprimer cet emprunt ?')) {
+        await fetch(apiBase + '/loans/' + id, { method: 'DELETE' });
+        loadLoans();
+      }
+    }
+
+    // Chargement initial des données
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadBooks();
+      await loadUsers();
+      await loadLoans();
+    });
+  </script>
+</body>
+</html>

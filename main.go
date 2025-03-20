@@ -14,6 +14,9 @@ func main() {
 	// Initialisation du routeur
 	r := gin.Default()
 
+	// Servir directement l'interface CRUD
+	r.StaticFile("/", "./frontend/index.html")
+
 	bookRoutes := r.Group("/books")
 	{
 		bookRoutes.GET("", handlers.GetBooks)
